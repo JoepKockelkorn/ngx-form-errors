@@ -27,13 +27,8 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "projects/ngx-form-errors/tsconfig.lib.json",
-              "projects/ngx-form-errors/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "tsConfig": ["projects/ngx-form-errors/tsconfig.lib.json", "projects/ngx-form-errors/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -53,13 +48,8 @@
             "main": "projects/test-app/src/main.ts",
             "polyfills": "projects/test-app/src/polyfills.ts",
             "tsConfig": "projects/test-app/tsconfig.app.json",
-            "assets": [
-              "projects/test-app/src/favicon.ico",
-              "projects/test-app/src/assets"
-            ],
-            "styles": [
-              "projects/test-app/src/styles.css"
-            ],
+            "assets": ["projects/test-app/src/favicon.ico", "projects/test-app/src/assets"],
+            "styles": ["projects/test-app/src/styles.css"],
             "scripts": []
           },
           "configurations": {
@@ -113,26 +103,16 @@
             "polyfills": "projects/test-app/src/polyfills.ts",
             "tsConfig": "projects/test-app/tsconfig.spec.json",
             "karmaConfig": "projects/test-app/karma.conf.js",
-            "styles": [
-              "projects/test-app/src/styles.css"
-            ],
+            "styles": ["projects/test-app/src/styles.css"],
             "scripts": [],
-            "assets": [
-              "projects/test-app/src/favicon.ico",
-              "projects/test-app/src/assets"
-            ]
+            "assets": ["projects/test-app/src/favicon.ico", "projects/test-app/src/assets"]
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "projects/test-app/tsconfig.app.json",
-              "projects/test-app/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "tsConfig": ["projects/test-app/tsconfig.app.json", "projects/test-app/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -158,9 +138,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": "projects/test-app-e2e/tsconfig.e2e.json",
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
