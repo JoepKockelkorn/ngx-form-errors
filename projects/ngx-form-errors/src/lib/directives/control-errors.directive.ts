@@ -3,11 +3,12 @@ import { NgControl } from '@angular/forms';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { EMPTY, merge, Observable } from 'rxjs';
 
-import { ControlErrorComponent } from '../../components/control-error/control-error.component';
-import { FORM_ERRORS } from '../../form-errors';
-import { FormErrors } from '../../models/form-errors.model';
-import { ControlErrorContainerDirective } from '../control-error-container/control-error-container.directive';
-import { FormSubmitDirective } from '../form-submit/form-submit.directive';
+import { ControlErrorComponent } from '../components/control-error/control-error.component';
+import { FORM_ERRORS } from '../form-errors';
+import { FormErrors } from '../models/form-errors.model';
+
+import { ControlErrorContainerDirective } from './control-error-container.directive';
+import { FormSubmitDirective } from './form-submit.directive';
 
 @core.Directive({
   selector: '[formControl], [formControlName]'
