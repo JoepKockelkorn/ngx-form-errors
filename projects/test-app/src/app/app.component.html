@@ -1,12 +1,17 @@
 <form [formGroup]="form" novalidate (ngSubmit)="onSubmit()">
   <div>
-    <label for="firstName">Firstname:</label>
-    <input type="text" formControlName="firstName" />
+    <label for="firstName">Firstname</label>
+    <input type="text" formControlName="firstName" [customErrors]="customErrors" [triggerOnBlur]="false" />
   </div>
 
   <div>
-    <label for="lastName">Lastname:</label>
+    <label for="lastName">Lastname</label>
     <input type="text" [formControl]="form.get('lastName')" />
+  </div>
+
+  <div>
+    <label for="email">Email</label>
+    <input type="text" [formControl]="form.get('email')" />
   </div>
 
   <div>

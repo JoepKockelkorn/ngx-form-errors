@@ -1,7 +1,22 @@
-import * as core from '@angular/core';
+import {
+  AfterContentInit,
+  AfterViewInit,
+  ComponentFactoryResolver,
+  ComponentRef,
+  Directive,
+  ElementRef,
+  Host,
+  Inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  Optional,
+  Self,
+  ViewContainerRef
+} from '@angular/core';
 import { NgControl } from '@angular/forms';
 import { untilDestroyed } from 'ngx-take-until-destroy';
-import { EMPTY, merge, Observable } from 'rxjs';
+import { EMPTY, fromEvent, merge, Observable } from 'rxjs';
 
 import { ControlErrorComponent } from '../components/control-error/control-error.component';
 import { FORM_ERRORS } from '../form-errors';
@@ -10,35 +25,58 @@ import { FormErrors } from '../models/form-errors.model';
 import { ControlErrorContainerDirective } from './control-error-container.directive';
 import { FormSubmitDirective } from './form-submit.directive';
 
-@core.Directive({
+@Directive({
   selector: '[formControl], [formControlName]'
 })
-export class ControlErrorsDirective implements core.OnInit, core.OnDestroy {
-  submit$: Observable<Event>;
-  ref: core.ComponentRef<ControlErrorComponent>;
-  container: core.ViewContainerRef;
-
-  @core.Input()
+export class ControlErrorsDirective implements OnInit, OnDestroy, AfterViewInit, AfterContentInit {
+  @Input()
   customErrors: FormErrors = {};
 
+  @Input()
+  triggerOnBlur = true;
+
+  @Input()
+  triggerOnSubmit = true;
+
+  private submit$: Observable<Event>;
+  private touched$: Observable<Event>;
+  private ref: ComponentRef<ControlErrorComponent>;
+  private container: ViewContainerRef;
+  private isTouched = false;
+  private isSubmitted = false;
+
   constructor(
-    @core.Self() private control: NgControl,
-    @core.Inject(FORM_ERRORS) private errors: FormErrors,
-    @core.Optional() @core.Host() private form: FormSubmitDirective,
-    private vcr: core.ViewContainerRef,
-    private resolver: core.ComponentFactoryResolver,
-    @core.Optional() controlErrorContainer: ControlErrorContainerDirective
-  ) {
-    this.submit$ = this.form ? this.form.submit$ : EMPTY;
-    this.container = controlErrorContainer ? controlErrorContainer.vcr : vcr;
-  }
+    private el: ElementRef,
+    private vcr: ViewContainerRef,
+    private resolver: ComponentFactoryResolver,
+    @Self() private control: NgControl,
+    @Inject(FORM_ERRORS) private errors: FormErrors,
+    @Optional() @Host() private form: FormSubmitDirective,
+    @Optional() private controlErrorContainer: ControlErrorContainerDirective
+  ) {}
 
   ngOnInit() {
-    merge(this.submit$, this.control.valueChanges)
+    this.submit$ = this.form ? this.form.submit$ : EMPTY;
+    this.submit$.pipe(untilDestroyed(this)).subscribe(() => (this.isSubmitted = true));
+    this.container = this.controlErrorContainer ? this.controlErrorContainer.vcr : this.vcr;
+  }
+
+  ngAfterContentInit() {
+    this.touched$ = fromEvent(this.el.nativeElement, 'blur');
+    this.touched$.pipe(untilDestroyed(this)).subscribe(() => (this.isTouched = true));
+  }
+
+  ngAfterViewInit() {
+    merge(this.submit$, this.control.valueChanges, this.touched$)
       .pipe(untilDestroyed(this))
       .subscribe(() => {
         const controlErrors = this.control.errors;
-        if (controlErrors) {
+        const shouldShowError = this.triggerOnBlur
+          ? this.isTouched
+          : false || this.triggerOnSubmit
+          ? this.isSubmitted
+          : false;
+        if (controlErrors && shouldShowError) {
           const firstKey = Object.keys(controlErrors)[0];
           const getError = this.customErrors[firstKey] || this.errors[firstKey];
           const text = getError ? getError(controlErrors[firstKey]) : '';
@@ -55,7 +93,7 @@ export class ControlErrorsDirective implements core.OnInit, core.OnDestroy {
   setError(text: string) {
     if (!this.ref) {
       const factory = this.resolver.resolveComponentFactory(ControlErrorComponent);
-      this.ref = this.vcr.createComponent(factory);
+      this.ref = this.container.createComponent(factory);
     }
 
     this.ref.instance.text = text;
