@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, Input, OnDestroy } from '@angular/core';
 
 import { CONTROL_ERROR_CLASS } from '../../control-error-class';
 
@@ -7,7 +7,7 @@ import { CONTROL_ERROR_CLASS } from '../../control-error-class';
   templateUrl: './control-error.component.html',
   styleUrls: ['./control-error.component.scss']
 })
-export class ControlErrorComponent {
+export class ControlErrorComponent implements OnDestroy {
   _text: string;
   _hide = true;
 
@@ -20,4 +20,8 @@ export class ControlErrorComponent {
   }
 
   constructor(@Inject(CONTROL_ERROR_CLASS) public controlErrorClass: string, private cdr: ChangeDetectorRef) {}
+
+  ngOnDestroy() {
+    this.cdr.detach();
+  }
 }
