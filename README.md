@@ -2,11 +2,11 @@
 
 ## TODO
 
-[ ] Explain how to use the module (and custom configuration)
-[ ] Explain how to add error styling to form/control
-[ ] Add Blur behavior for controls
+[ ] Add Blur behavior for controls (and option to disable)
 [ ] Add support for groups/arrays
 [ ] Add support for a template
+[ ] Explain how to use the module (and custom configuration)
+[ ] Explain how to add error styling to form/control
 
 Control:
 
