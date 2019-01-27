@@ -2,17 +2,17 @@
 
 ## TODO
 
-[x] Add Blur behavior for controls (and option to disable)
-[ ] Add support for groups/arrays
-[ ] Add support for a template
-[ ] Showcase container
-[ ] Explain how to use the module (and custom configuration)
-[ ] Explain how to add error styling to form/control
-
-Control:
-
-```typescript
-```
+- [x] ~~Add Blur behavior for controls (and option to disable)~~
+- [x] ~~Add support for a template~~
+- [x] ~~Showcase container~~
+- [ ] Add support for groups/arrays
+- [ ] Explain how to use
+  - [ ] basic use
+  - [ ] custom configuration
+  - [ ] styling
+  - [ ] container
+  - [ ] template
+  - [ ] triggerOnBlur/triggerOnSubmit
 
 Form:
 
