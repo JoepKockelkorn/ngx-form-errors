@@ -1,29 +1,17 @@
 import { ChangeDetectorRef, Component, Inject, Input, OnDestroy, TemplateRef } from '@angular/core';
 
-import { CONTROL_ERROR_CLASS } from '../../control-error-class';
+import { FORM_ERRORS_CONFIG } from '../../injection-tokens';
+import { FormErrorsConfig } from '../../models/form-errors-config.model';
+
+import { ControlErrorBaseComponent } from './control-error-base-component';
 
 @Component({
   selector: 'nfe-control-error',
   templateUrl: './control-error.component.html',
   styleUrls: ['./control-error.component.scss']
 })
-export class ControlErrorComponent implements OnDestroy {
-  _text: string;
-  _hide = true;
-
-  @Input() template: TemplateRef<any> = null;
-
-  @Input() set text(value: string) {
-    if (value !== this._text) {
-      this._text = value;
-      this._hide = !value;
-      this.cdr.detectChanges();
-    }
-  }
-
-  constructor(@Inject(CONTROL_ERROR_CLASS) public controlErrorClass: string, private cdr: ChangeDetectorRef) {}
-
-  ngOnDestroy() {
-    this.cdr.detach();
+export class ControlErrorComponent extends ControlErrorBaseComponent {
+  constructor(@Inject(FORM_ERRORS_CONFIG) public config: FormErrorsConfig, cdr: ChangeDetectorRef) {
+    super(cdr);
   }
 }

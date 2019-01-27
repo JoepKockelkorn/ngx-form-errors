@@ -19,8 +19,9 @@ import { ControlContainer, NgControl } from '@angular/forms';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { EMPTY, fromEvent, merge, Observable } from 'rxjs';
 
-import { ControlErrorComponent } from '../components/control-error/control-error.component';
-import { FORM_ERRORS } from '../form-errors';
+import { ControlErrorBaseComponent } from '../components/control-error/control-error-base-component';
+import { FORM_ERRORS_CONFIG } from '../injection-tokens';
+import { FormErrorsConfig } from '../models/form-errors-config.model';
 import { FormErrors } from '../models/form-errors.model';
 
 import { ControlErrorContainerDirective } from './control-error-container.directive';
@@ -34,17 +35,23 @@ export class ControlErrorsDirective implements OnInit, OnDestroy, AfterViewInit,
   customErrors: FormErrors = {};
 
   @Input()
-  triggerOnBlur = true;
+  set triggerOnBlur(value: boolean) {
+    this._triggerOnBlur = value;
+  }
 
   @Input()
-  triggerOnSubmit = true;
+  set triggerOnSubmit(value: boolean) {
+    this._triggerOnSubmit = value;
+  }
 
   @Input()
   errorTemplate: TemplateRef<any> = null;
 
+  private _triggerOnBlur: boolean;
+  private _triggerOnSubmit: boolean;
   private submit$: Observable<Event>;
   private touched$: Observable<Event>;
-  private ref: ComponentRef<ControlErrorComponent>;
+  private ref: ComponentRef<ControlErrorBaseComponent>;
   private container: ViewContainerRef;
   private isTouched = false;
   private isSubmitted = false;
@@ -55,12 +62,14 @@ export class ControlErrorsDirective implements OnInit, OnDestroy, AfterViewInit,
     private resolver: ComponentFactoryResolver,
     @Optional() @Self() private control: NgControl,
     @Optional() @Self() private controlContainer: ControlContainer,
-    @Inject(FORM_ERRORS) private errors: FormErrors,
+    @Inject(FORM_ERRORS_CONFIG) private config: FormErrorsConfig,
     @Optional() @Host() private form: FormSubmitDirective,
     @Optional() private controlErrorContainer: ControlErrorContainerDirective
   ) {}
 
   ngOnInit() {
+    this._triggerOnBlur = this.config.triggerOnBlur;
+    this._triggerOnSubmit = this.config.triggerOnSubmit;
     this.submit$ = this.form ? this.form.submit$ : EMPTY;
     this.submit$.pipe(untilDestroyed(this)).subscribe(() => (this.isSubmitted = true));
     this.container = this.controlErrorContainer ? this.controlErrorContainer.vcr : this.vcr;
@@ -77,12 +86,12 @@ export class ControlErrorsDirective implements OnInit, OnDestroy, AfterViewInit,
       .pipe(untilDestroyed(this))
       .subscribe(() => {
         const controlErrors = control.errors;
-        const showOnSubmit = this.triggerOnSubmit ? this.isSubmitted : false;
-        const showOnBlur = this.triggerOnBlur ? this.isTouched : false;
+        const showOnSubmit = this._triggerOnSubmit ? this.isSubmitted : false;
+        const showOnBlur = this._triggerOnBlur ? this.isTouched : false;
         const showError = showOnSubmit || showOnBlur;
         if (controlErrors && showError) {
           const firstKey = Object.keys(controlErrors)[0];
-          const getError = this.customErrors[firstKey] || this.errors[firstKey];
+          const getError = this.customErrors[firstKey] || this.config.formErrors[firstKey];
           const text = getError ? getError(controlErrors[firstKey]) : '';
           this.setError(text);
         } else if (this.ref) {
@@ -96,7 +105,7 @@ export class ControlErrorsDirective implements OnInit, OnDestroy, AfterViewInit,
 
   setError(text: string) {
     if (!this.ref) {
-      const factory = this.resolver.resolveComponentFactory(ControlErrorComponent);
+      const factory = this.resolver.resolveComponentFactory(this.config.controlErrorComponentType);
       this.ref = this.container.createComponent(factory);
     }
 

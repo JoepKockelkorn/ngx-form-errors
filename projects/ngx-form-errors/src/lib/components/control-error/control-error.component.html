@@ -1,4 +1,4 @@
-<p *ngIf="!template" [class]="controlErrorClass" [class.hide]="_hide">{{ _text }}</p>
+<p *ngIf="!template" [class]="config.controlErrorClass" [class.hide]="_hide">{{ _text }}</p>
 
 <ng-container *ngIf="template">
   <ng-container *ngTemplateOutlet="template; context: { text: _text, hide: _hide }"></ng-container>
