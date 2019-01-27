@@ -12,6 +12,7 @@ import {
   OnInit,
   Optional,
   Self,
+  TemplateRef,
   ViewContainerRef
 } from '@angular/core';
 import { NgControl } from '@angular/forms';
@@ -37,6 +38,9 @@ export class ControlErrorsDirective implements OnInit, OnDestroy, AfterViewInit,
 
   @Input()
   triggerOnSubmit = true;
+
+  @Input()
+  errorTemplate: TemplateRef<any> = null;
 
   private submit$: Observable<Event>;
   private touched$: Observable<Event>;
@@ -71,12 +75,10 @@ export class ControlErrorsDirective implements OnInit, OnDestroy, AfterViewInit,
       .pipe(untilDestroyed(this))
       .subscribe(() => {
         const controlErrors = this.control.errors;
-        const shouldShowError = this.triggerOnBlur
-          ? this.isTouched
-          : false || this.triggerOnSubmit
-          ? this.isSubmitted
-          : false;
-        if (controlErrors && shouldShowError) {
+        const showOnSubmit = this.triggerOnSubmit ? this.isSubmitted : false;
+        const showOnBlur = this.triggerOnBlur ? this.isTouched : false;
+        const showError = showOnSubmit || showOnBlur;
+        if (controlErrors && showError) {
           const firstKey = Object.keys(controlErrors)[0];
           const getError = this.customErrors[firstKey] || this.errors[firstKey];
           const text = getError ? getError(controlErrors[firstKey]) : '';
@@ -97,5 +99,6 @@ export class ControlErrorsDirective implements OnInit, OnDestroy, AfterViewInit,
     }
 
     this.ref.instance.text = text;
+    this.ref.instance.template = this.errorTemplate;
   }
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, Input, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, Input, OnDestroy, TemplateRef } from '@angular/core';
 
 import { CONTROL_ERROR_CLASS } from '../../control-error-class';
 
@@ -10,6 +10,8 @@ import { CONTROL_ERROR_CLASS } from '../../control-error-class';
 export class ControlErrorComponent implements OnDestroy {
   _text: string;
   _hide = true;
+
+  @Input() template: TemplateRef<any> = null;
 
   @Input() set text(value: string) {
     if (value !== this._text) {
