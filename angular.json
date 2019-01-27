@@ -49,7 +49,7 @@
             "polyfills": "projects/test-app/src/polyfills.ts",
             "tsConfig": "projects/test-app/tsconfig.app.json",
             "assets": ["projects/test-app/src/favicon.ico", "projects/test-app/src/assets"],
-            "styles": ["projects/test-app/src/styles.css"],
+            "styles": ["projects/test-app/src/styles.scss"],
             "scripts": []
           },
           "configurations": {
@@ -103,7 +103,7 @@
             "polyfills": "projects/test-app/src/polyfills.ts",
             "tsConfig": "projects/test-app/tsconfig.spec.json",
             "karmaConfig": "projects/test-app/karma.conf.js",
-            "styles": ["projects/test-app/src/styles.css"],
+            "styles": ["projects/test-app/src/styles.scss"],
             "scripts": [],
             "assets": ["projects/test-app/src/favicon.ico", "projects/test-app/src/assets"]
           }
