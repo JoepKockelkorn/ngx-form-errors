@@ -9,10 +9,23 @@
     <input type="text" [formControl]="form.get('lastName')" />
   </div>
 
+  <div controlErrorContainer>
+    <label>
+      Check me to be valid
+      <input type="checkbox" formControlName="check" />
+    </label>
+  </div>
+
   <div>
     <label for="email">Email</label>
-    <input type="text" [formControl]="form.get('email')" />
+    <input type="text" [formControl]="form.get('email')" [errorTemplate]="emailErrorTemplate" />
   </div>
+
+  <ng-template #emailErrorTemplate let-text="text" let-hide="hide">
+    <h1 [style.display]="hide ? 'none' : 'block'">{{ text }}</h1>
+
+    <p>PS. This error is shown using a template</p>
+  </ng-template>
 
   <div>
     <button type="submit">Submit</button>
