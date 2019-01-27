@@ -27,6 +27,21 @@
     <p>PS. This error is shown using a template</p>
   </ng-template>
 
+  <div formGroupName="childForm">
+    <label for="animal">Animal</label>
+    <input type="text" formControlName="animal" />
+  </div>
+
+  <h2>Animals:</h2>
+  <div formArrayName="animals" [customErrors]="animalErrors">
+    <div *ngFor="let a of animals.controls; let i = index" [formGroupName]="i">
+      <label [for]="'animal' + i">Animal {{ i }}</label>
+      <input type="text" formControlName="name" />
+    </div>
+  </div>
+
+  <button type="button" (click)="addAnimal()">Create animal</button>
+
   <div>
     <button type="submit">Submit</button>
   </div>

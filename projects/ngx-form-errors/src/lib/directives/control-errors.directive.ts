@@ -15,7 +15,7 @@ import {
   TemplateRef,
   ViewContainerRef
 } from '@angular/core';
-import { NgControl } from '@angular/forms';
+import { ControlContainer, NgControl } from '@angular/forms';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { EMPTY, fromEvent, merge, Observable } from 'rxjs';
 
@@ -27,7 +27,7 @@ import { ControlErrorContainerDirective } from './control-error-container.direct
 import { FormSubmitDirective } from './form-submit.directive';
 
 @Directive({
-  selector: '[formControl], [formControlName]'
+  selector: '[formControl], [formControlName], [formGroup], [formGroupName], [formArray], [formArrayName]'
 })
 export class ControlErrorsDirective implements OnInit, OnDestroy, AfterViewInit, AfterContentInit {
   @Input()
@@ -53,7 +53,8 @@ export class ControlErrorsDirective implements OnInit, OnDestroy, AfterViewInit,
     private el: ElementRef,
     private vcr: ViewContainerRef,
     private resolver: ComponentFactoryResolver,
-    @Self() private control: NgControl,
+    @Optional() @Self() private control: NgControl,
+    @Optional() @Self() private controlContainer: ControlContainer,
     @Inject(FORM_ERRORS) private errors: FormErrors,
     @Optional() @Host() private form: FormSubmitDirective,
     @Optional() private controlErrorContainer: ControlErrorContainerDirective
@@ -66,15 +67,16 @@ export class ControlErrorsDirective implements OnInit, OnDestroy, AfterViewInit,
   }
 
   ngAfterContentInit() {
-    this.touched$ = fromEvent(this.el.nativeElement, 'blur');
+    this.touched$ = this.el ? fromEvent(this.el.nativeElement, 'blur') : EMPTY;
     this.touched$.pipe(untilDestroyed(this)).subscribe(() => (this.isTouched = true));
   }
 
   ngAfterViewInit() {
-    merge(this.submit$, this.control.valueChanges, this.touched$)
+    const control = this.control || this.controlContainer.control;
+    merge(this.submit$, control.valueChanges, this.touched$)
       .pipe(untilDestroyed(this))
       .subscribe(() => {
-        const controlErrors = this.control.errors;
+        const controlErrors = control.errors;
         const showOnSubmit = this.triggerOnSubmit ? this.isSubmitted : false;
         const showOnBlur = this.triggerOnBlur ? this.isTouched : false;
         const showError = showOnSubmit || showOnBlur;
