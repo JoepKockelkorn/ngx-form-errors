@@ -6,6 +6,7 @@
 - [x] ~~Add support for a template~~
 - [x] ~~Showcase container~~
 - [x] ~~Add support for groups/array~~
+- [ ] Edit global configuration options via forRoot method
 - [ ] Document
   - [ ] basic use
   - [ ] custom configuration
