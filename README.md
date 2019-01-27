@@ -5,14 +5,15 @@
 - [x] ~~Add Blur behavior for controls (and option to disable)~~
 - [x] ~~Add support for a template~~
 - [x] ~~Showcase container~~
-- [ ] Add support for groups/arrays
-- [ ] Explain how to use
+- [x] ~~Add support for groups/array~~
+- [ ] Document
   - [ ] basic use
   - [ ] custom configuration
   - [ ] styling
   - [ ] container
   - [ ] template
   - [ ] triggerOnBlur/triggerOnSubmit
+- [ ] Prepare for NPM
 
 Form:
 
